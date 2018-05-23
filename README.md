@@ -12,6 +12,5 @@ Enable the tasklist plugin.
 This plugin has limit fields because it matches what can be synced with ActiveSync.
 
 TODO:
-    Show alarms
-    Make some changes in the UI (what fields to show and what to hide)
-
+ - Alarms
+ - Make some changes in the UI (what fields to show and what to hide)
