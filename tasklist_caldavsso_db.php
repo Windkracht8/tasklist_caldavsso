@@ -62,6 +62,12 @@ class tasklist_caldavsso_db{
 		if($db_error = $this->dbh->is_error($sql_result)){$this->handle_error($db_error);return false;}
 		return true;
 	}
+	public function del_user($username){
+		$sql = "DELETE FROM ".$this->prefix."tasklist_caldavsso_lists WHERE username = ?;";
+		$sql_result = $this->dbh->query($sql, array($username));
+		if($db_error = $this->dbh->is_error($sql_result)){$this->handle_error($db_error);return false;}
+		return true;
+	}
 
 	private function handle_error($error){
 		if(strpos($error, "Table") !== false

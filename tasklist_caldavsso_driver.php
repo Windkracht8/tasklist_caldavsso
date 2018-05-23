@@ -21,8 +21,7 @@ require_once (dirname(__FILE__).'/config.inc.php');
 require_once (dirname(__FILE__).'/tasklist_caldavsso_db.php');
 require_once (dirname(__FILE__).'/tasklist_caldavsso_dav.php');
 
-//TODO: alarms
-//TODO: add priority to ui
+// TODO: add priority to ui
 
 class tasklist_caldavsso_driver extends tasklist_driver{
 	const PRODID = "windkracht8/tasklist_caldavsso";
@@ -177,7 +176,7 @@ class tasklist_caldavsso_driver extends tasklist_driver{
 	 * @see tasklist_driver::count_tasks()
 	 */
 	function count_tasks($lists = null){
-		//TODO: count_tasks
+		// TODO: count_tasks
 		$counts = array('all' => 0
 						,'flagged' => 0
 						,'today' => 0
@@ -247,7 +246,7 @@ class tasklist_caldavsso_driver extends tasklist_driver{
 	 * @see tasklist_driver::pending_alarms()
 	 */
 	public function pending_alarms($time, $lists = null){
-		return array();
+		return array(); // TODO pending_alarms
 	}
 
 	/**
@@ -256,7 +255,7 @@ class tasklist_caldavsso_driver extends tasklist_driver{
 	 * @see tasklist_driver::dismiss_alarm()
 	 */
 	public function dismiss_alarm($task_id, $snooze = 0){
-		return false;
+		return false; // TODO dismiss_alarm
 	}
 
 	/**
@@ -407,7 +406,7 @@ class tasklist_caldavsso_driver extends tasklist_driver{
 	 * Handler for user_delete plugin hook
 	 */
 	public function user_delete($args){
-		// TODO, cleanup db
+		return tasklist_caldavsso_db::get_instance()->del_user($args['user']->ID);
 	}
 
 	/**
