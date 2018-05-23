@@ -7,10 +7,9 @@ Configure the default tasklist in config_inc.php.
 
 Configure the tasklist to use the driver by setting: $config['tasklist_driver'] = "caldavsso";
 
-Enable the tasklist plugin.
+Apply the taskedit.html.patch to remove the properties in the UI that are not supported by ActiveSync.
 
-This plugin has limit fields because it matches what can be synced with ActiveSync.
+Enable the tasklist plugin.
 
 TODO:
  - Alarms
- - Make some changes in the UI (what fields to show and what to hide)

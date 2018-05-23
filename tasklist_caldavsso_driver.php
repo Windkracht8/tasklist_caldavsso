@@ -21,8 +21,6 @@ require_once (dirname(__FILE__).'/config.inc.php');
 require_once (dirname(__FILE__).'/tasklist_caldavsso_db.php');
 require_once (dirname(__FILE__).'/tasklist_caldavsso_dav.php');
 
-// TODO: add priority to ui
-
 class tasklist_caldavsso_driver extends tasklist_driver{
 	const PRODID = "windkracht8/tasklist_caldavsso";
 	// features this backend supports
