@@ -42,7 +42,6 @@ class tasklist_caldavsso_driver extends tasklist_driver{
 	 */
 	public function __construct($plugin){
 		$this->rc = $plugin->rc;
-        $plugin->include_stylesheet("drivers/caldavsso/tasklist_caldavsso.css");
 	}
 
 	/**
@@ -182,7 +181,7 @@ class tasklist_caldavsso_driver extends tasklist_driver{
 						,'today' => 0
 						,'tomorrow' => 0
 						,'overdue' => 0
-						,'nodate'  => 0);
+						,'nodate' => 0);
 		return $counts;
 	}
 
