@@ -192,6 +192,10 @@ class tasklist_caldavsso_driver extends tasklist_driver{
 	 * @see tasklist_driver::list_tasks()
 	 */
 	function list_tasks($filter, $lists = null){
+		if(is_string($lists) && strpos($lists, ',') !== false){
+			$lists = explode(',', $lists);
+		}
+
 		if(is_array($lists)){
 			$tasks = array();
 			foreach($lists as $list){
@@ -217,9 +221,7 @@ class tasklist_caldavsso_driver extends tasklist_driver{
 	 * @return array Hash array with task properties or false if not found
 	 */
 	public function get_task($prop, $filter = 0){
-		if(!isset($prop['id'])){
-			$prop['id'] = $prop['uid'].".ics";
-		}
+		if(!isset($prop['id'])) $prop['id'] = $prop['uid'].".ics";
 		return $prop;
 	}
 
@@ -231,7 +233,7 @@ class tasklist_caldavsso_driver extends tasklist_driver{
 	 * @return array List of all child task IDs
 	 */
 	public function get_childs($prop, $recursive = false){
-		return array();
+		return tasklist_caldavsso_dav::get_task_childs($prop['list'], $prop['id']);
 	}
 
 	/**
@@ -243,7 +245,7 @@ class tasklist_caldavsso_driver extends tasklist_driver{
 	 * @see tasklist_driver::pending_alarms()
 	 */
 	public function pending_alarms($time, $lists = null){
-		return array(); // TODO pending_alarms
+		return array();
 	}
 
 	/**
@@ -252,7 +254,7 @@ class tasklist_caldavsso_driver extends tasklist_driver{
 	 * @see tasklist_driver::dismiss_alarm()
 	 */
 	public function dismiss_alarm($task_id, $snooze = 0){
-		return false; // TODO dismiss_alarm
+		return false;
 	}
 
 	/**
@@ -416,6 +418,7 @@ class tasklist_caldavsso_driver extends tasklist_driver{
 			$dav_sso = $list['dav_sso'];
 			$dav_user = $dav_sso == 1 ? " " : $list['dav_user'];
 			$dav_pass = $dav_sso == 1 ? "" : $list['dav_pass'];
+			$dav_readonly = $list['dav_readonly'];
 		}
 
 		$fieldprop["dav_url"] = array('id' => "taskedit-dav_url"

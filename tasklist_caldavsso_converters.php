@@ -26,6 +26,9 @@ class tasklist_caldavsso_converters{
 		if(isset($driver_task['priority']) && $driver_task['priority'] != ""){
 			$vtodo->PRIORITY = $driver_task['priority'];
 		}
+		if(isset($driver_task['parent_id']) && $driver_task['parent_id'] != ""){
+			$vtodo->add('RELATED-TO', $driver_task['parent_id']);
+		}
 		if(isset($driver_task['valarms']) && is_array($driver_task['valarms'])){
 			foreach($driver_task['valarms'] as $alarm){
 				$valarm = $vcal->createComponent('VALARM');
@@ -43,7 +46,7 @@ class tasklist_caldavsso_converters{
 		$driver_task["list"] = $list_id;
 		$driver_task["id"] = strrpos($href, '/') ? substr($href, strrpos($href, '/')+1) : $href; // Strip everything before the last /
 		
-		foreach($vtodo->children as $value){
+		foreach($vtodo->children() as $value){
 			switch($value->name){
 				case "SUMMARY":
 					$driver_task['title'] = (string)$value;
@@ -62,6 +65,9 @@ class tasklist_caldavsso_converters{
 					break;
 				case "PRIORITY":
 					$driver_task['priority'] = (string)$value;
+					break;
+				case "RELATED-TO":
+					$driver_task['parent_id'] = (string)$value;
 					break;
 				case "VALARM":
 					foreach($value->children as $valarm_child){

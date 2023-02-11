@@ -2,6 +2,7 @@
 
 class tasklist_caldavsso_db{
 	static private $instance;
+	private $rc;
 	private $username;
 	private $dbh;
 	private $prefix;
