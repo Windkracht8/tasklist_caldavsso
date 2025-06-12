@@ -53,7 +53,6 @@ class tasklist_caldavsso_driver extends tasklist_driver{
 			$default_list = array(
 				'list_id' => 0
 				,'name' => "My Tasklist"
-				,'color' => "0"
 				,'showalarms' => true
 				,'dav_readonly' => false
 				,'dav_url' => str_replace("%USER%", $this->rc->get_user_name(), tasklist_caldavsso_config::$DEFAULT_DAVSERVER).tasklist_caldavsso_config::$DEFAULT_TASKLIST
@@ -70,7 +69,6 @@ class tasklist_caldavsso_driver extends tasklist_driver{
 				'id' => $list_db['list_id']
 				,'name' => $list_db['name']
 				,'listname' => $list_db['name']
-				,'color' => $list_db['color']
 				,'showalarms' => $list_db['showalarms']
 				,'active' => true
 				,'editable' => $list_db['dav_readonly'] != 1
@@ -90,15 +88,14 @@ class tasklist_caldavsso_driver extends tasklist_driver{
 	 */
 	public function create_list(&$prop){
 		return tasklist_caldavsso_db::get_instance()->set_list_data(
-				$prop['list_id']
+				null
 				,$prop['name']
-				,$prop['color']
 				,$prop['showalarms']
 				,$prop['dav_url']
-				,$prop['dav_sso']
+				,isset($prop['dav_sso']) && $prop['dav_sso'] == 'on' ? 1 : 0
 				,$prop['dav_user']
 				,$prop['dav_pass']
-				,$prop['dav_readonly']
+				,isset($prop['dav_readonly']) && $prop['dav_readonly'] == 'on' ? 1 : 0
 		);
 	}
 
@@ -113,13 +110,12 @@ class tasklist_caldavsso_driver extends tasklist_driver{
 		return tasklist_caldavsso_db::get_instance()->set_list_data(
 				$prop['id']
 				,$prop['name']
-				,$prop['color']
 				,$prop['showalarms']
 				,$prop['dav_url']
-				,$prop['dav_sso']
+				,isset($prop['dav_sso']) && $prop['dav_sso'] == 'on' ? 1 : 0
 				,$prop['dav_user']
 				,$prop['dav_pass']
-				,$prop['dav_readonly']
+				,isset($prop['dav_readonly']) && $prop['dav_sso'] == 'on' ? 1 : 0
 		);
 	}
 
@@ -221,7 +217,10 @@ class tasklist_caldavsso_driver extends tasklist_driver{
 	 * @return array Hash array with task properties or false if not found
 	 */
 	public function get_task($prop, $filter = 0){
-		if(!isset($prop['id'])) $prop['id'] = $prop['uid'].".ics";
+		if(!isset($prop['id'])){
+			$prop['id'] = $prop['uid'];
+			$prop['uid'] .= ".ics";
+		}
 		return $prop;
 	}
 
@@ -272,9 +271,9 @@ class tasklist_caldavsso_driver extends tasklist_driver{
 	 * @param array Hash array with task properties (see header of this file)
 	 * @return mixed New event ID on success, False on error
 	 * @see tasklist_driver::create_task()
-	 */
+	 */ 
 	public function create_task($task){
-		return tasklist_caldavsso_dav::create_task($task);
+		return tasklist_caldavsso_dav::create_task($task, $this->rc->config->get('timezone'));
 	}
 
 	/**
@@ -285,7 +284,7 @@ class tasklist_caldavsso_driver extends tasklist_driver{
 	 * @see tasklist_driver::edit_task()
 	 */
 	public function edit_task($prop){
-		return tasklist_caldavsso_dav::edit_task($prop);
+		return tasklist_caldavsso_dav::edit_task($prop, $this->rc->config->get('timezone'));
 	}
 
 	/**
@@ -416,9 +415,15 @@ class tasklist_caldavsso_driver extends tasklist_driver{
 			$list = tasklist_caldavsso_db::get_instance()->get_list($list['id']);
 			$dav_url = $list['dav_url'];
 			$dav_sso = $list['dav_sso'];
-			$dav_user = $dav_sso == 1 ? " " : $list['dav_user'];
+			$dav_user = $dav_sso == 1 ? "" : $list['dav_user'];
 			$dav_pass = $dav_sso == 1 ? "" : $list['dav_pass'];
 			$dav_readonly = $list['dav_readonly'];
+		}else{
+			$dav_url = "";
+			$dav_sso = 1;
+			$dav_user = "";
+			$dav_pass = "";
+			$dav_readonly = 0;
 		}
 
 		$fieldprop["dav_url"] = array('id' => "taskedit-dav_url"

@@ -38,15 +38,15 @@ class tasklist_caldavsso_db{
 		}
 		return $list;
 	}
-	public function set_list_data($list_id, $name, $color, $showalarms, $dav_url, $dav_sso, $dav_user, $dav_pass, $dav_readonly){
+	public function set_list_data($list_id, $name, $showalarms, $dav_url, $dav_sso, $dav_user, $dav_pass, $dav_readonly){
 		if(!$list_id){$list_id = $this->incr_list_id();if(!$list_id){return false;}}
 		$dav_pass_enc = $this->rc->encrypt($dav_pass);
 		$sql = "INSERT INTO ".$this->prefix."tasklist_caldavsso_lists "
-					."(username, list_id, name, color, showalarms, dav_url, dav_sso, dav_user, dav_pass, dav_readonly) "
-					."VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-					."ON DUPLICATE KEY UPDATE name=VALUES(name), color=VALUES(color), showalarms=VALUES(showalarms)"
+					."(username, list_id, name, showalarms, dav_url, dav_sso, dav_user, dav_pass, dav_readonly) "
+					."VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)"
+					."ON DUPLICATE KEY UPDATE name=VALUES(name), showalarms=VALUES(showalarms)"
 						.", dav_url=VALUES(dav_url), dav_sso=VALUES(dav_sso), dav_user=VALUES(dav_user), dav_pass=VALUES(dav_pass), dav_readonly=VALUES(dav_readonly);";
-		$sql_result = $this->dbh->query($sql, array($this->username, $list_id, $name, $color, $showalarms, $dav_url, $dav_sso, $dav_user, $dav_pass_enc, $dav_readonly));
+		$sql_result = $this->dbh->query($sql, array($this->username, $list_id, $name, $showalarms, $dav_url, $dav_sso, $dav_user, $dav_pass_enc, $dav_readonly));
 		if($db_error = $this->dbh->is_error($sql_result)){$this->handle_error($db_error);return false;}
 		return true;
 	}
@@ -89,7 +89,7 @@ class tasklist_caldavsso_db{
 		$create_db_lists = "CREATE TABLE IF NOT EXISTS ".
 				$this->prefix."tasklist_caldavsso_lists(".
 				"username VARCHAR(255),list_id INT".
-				",name VARCHAR(255),showalarms INT,color VARCHAR(16)".
+				",name VARCHAR(255),showalarms INT".
 				",dav_url VARCHAR(255),dav_sso INT,dav_user VARCHAR(255),dav_pass VARCHAR(255),dav_readonly INT".
 				",UNIQUE KEY unique_index(username,list_id));";
 		$sql_result = $this->dbh->query($create_db_lists);
