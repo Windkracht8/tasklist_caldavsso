@@ -14,7 +14,7 @@ class tasklist_caldavsso_converters{
 			$vtodo->UID = $driver_task['uid'];
 		}
 		if(strlen($driver_task['description'] ?? '')>0){$vtodo->DESCRIPTION = $driver_task['description'];}
-		
+
 		if(isset($driver_task['startdate']) && $driver_task['startdate']){
 			if(isset($driver_task['starttime']) && $driver_task['starttime']){
 				$vtodo->DTSTART = str_replace('-', '', $driver_task['startdate'])."T".str_replace(':', '', $driver_task['starttime'])."00";
@@ -104,11 +104,11 @@ class tasklist_caldavsso_converters{
 
 	public static function vtask2driver($vtodo, $list_id, $href){
 		$driver_task = array();
-		
+
 		$driver_task["list"] = $list_id;
 		$driver_task["uid"] = strrpos($href, '/') ? substr($href, strrpos($href, '/')+1) : $href; // Strip everything before the last /
 		$driver_task['description'] = "";
-		
+
 		foreach($vtodo->children() as $value){
 			switch($value->name){
 				case "SUMMARY":
@@ -162,11 +162,12 @@ class tasklist_caldavsso_converters{
 						}
 					}
 					break;
-				
+
 				case "PERCENT-COMPLETE":
 				case "DTSTAMP":
 				case "LAST-MODIFIED":
 				case "CREATED":
+				case "COMPLETED":
 				case "SEQUENCE":
 				case "X-OC-HIDESUBTASKS":
 				case "X-APPLE-SORT-ORDER":
